@@ -18,6 +18,8 @@ public class ProductWritePersistenceAdapter implements ProductWriteOutput {
     private final ProductWriteRepository productWriteRepository;
     private final ProductWritePersistenceMapper mapper;
 
+//    private final KafkaTemplate<String, String> kafkaTemplate;
+
     @Override
     @Transactional(readOnly = true)
     public Optional<Product> getById(UUID id) {
@@ -28,8 +30,22 @@ public class ProductWritePersistenceAdapter implements ProductWriteOutput {
     @Override
     public Product save(Product product) {
         final var entity = mapper.toEntity(product);
-        return mapper.toDomain(
+        final var productSaved = mapper.toDomain(
                 productWriteRepository.save(entity)
         );
+
+//        kafkaTemplate.send(productSaved);
+
+        return productSaved;
+    }
+
+    @Override
+    public Product create(Product product) {
+        final var entity = mapper.toEntity(product);
+//        final var outOfBoc = ;
+
+        productWriteRepository.save(entity);
+
+        return null;
     }
 }

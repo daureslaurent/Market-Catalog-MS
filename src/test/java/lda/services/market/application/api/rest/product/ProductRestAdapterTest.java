@@ -6,7 +6,8 @@ import lda.services.market.application.api.rest.product.model.ProductDetalRespon
 import lda.services.market.application.api.rest.product.model.ProductResponse;
 import lda.services.market.domain.product.ProductSampleTest;
 import lda.services.market.domain.product.model.Product;
-import lda.services.market.domain.product.port.ProductInput;
+import lda.services.market.domain.product.port.ProductCommandInput;
+import lda.services.market.domain.product.port.ProductQueryInput;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +31,10 @@ class ProductRestAdapterTest {
     private ProductRestAdapter productRestAdapter;
 
     @Mock
-    private ProductInput productInput;
+    private ProductQueryInput productQueryInput;
+
+    @Mock
+    private ProductCommandInput productCommandInput;
 
     @Mock
     private ProductRestMapper productRestMapper;
@@ -71,7 +75,7 @@ class ProductRestAdapterTest {
 
 
         // Given
-        when(productInput.retrieveByPage(pageReq))
+        when(productQueryInput.retrieveByPage(pageReq))
                 .thenReturn(pageDomain);
 
         when(productRestMapper.toProductDetailResponse(productDomain0))
@@ -86,7 +90,7 @@ class ProductRestAdapterTest {
         assertThat(pageRetrieved).isNotNull();
         assertThat(pageRetrieved).isEqualTo(pageResponse);
 
-        verify(productInput).retrieveByPage(pageReq);
+        verify(productQueryInput).retrieveByPage(pageReq);
         verify(productRestMapper).toProductDetailResponse(productDomain0);
         verify(productRestMapper).toProductDetailResponse(productDomain1);
     }
@@ -101,7 +105,7 @@ class ProductRestAdapterTest {
                 .build();
 
         // Given
-        when(productInput.retrieveById(productDomain.id()))
+        when(productQueryInput.retrieveById(productDomain.id()))
                 .thenReturn(productDomain);
         when(productRestMapper.toProductDetailResponse(productDomain))
                 .thenReturn(productDetailResponseWanted);
@@ -113,7 +117,7 @@ class ProductRestAdapterTest {
         assertThat(productDetailResponse).isNotNull();
         assertThat(productDetailResponse).isEqualTo(productDetailResponseWanted);
 
-        verify(productInput).retrieveById(productDomain.id());
+        verify(productQueryInput).retrieveById(productDomain.id());
         verify(productRestMapper).toProductDetailResponse(productDomain);
     }
 
@@ -139,7 +143,7 @@ class ProductRestAdapterTest {
         // Given
         when(productRestMapper.toProduct(productCreateRequest))
                 .thenReturn(productReq);
-        when(productInput.addProduct(productReq))
+        when(productCommandInput.addProduct(productReq))
                 .thenReturn(productRes);
         when(productRestMapper.toProductResponse(productRes))
                 .thenReturn(productResponseRest);
@@ -153,7 +157,7 @@ class ProductRestAdapterTest {
         verify(productRestMapper).toProduct(productCreateRequest);
         verify(productRestMapper).toProductResponse(productRes);
 
-        verify(productInput).addProduct(productReq);
+        verify(productCommandInput).addProduct(productReq);
 
     }
 

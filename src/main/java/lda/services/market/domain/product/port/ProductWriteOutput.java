@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface ProductWriteOutput {
     Optional<Product> getById(final UUID id);
     Product save(final Product product);
+    Product create(final Product product);
 }
