@@ -1,0 +1,35 @@
+###
+GET http://localhost:8080/product/a1bfc1aa-cb04-43c4-b171-af2ee4f922f2
+
+<> 2026-01-15T143333.200.json
+
+###
+POST http://localhost:8080/product
+Content-Type: application/json
+
+{
+  "name": "Test2",
+  "quantity": 5
+}
+
+<> 2026-01-15T145917.200.json
+<> 2026-01-15T145914.200.json
+<> 2026-01-15T145751.200.json
+<> 2026-01-15T143245.200.json
+<> 2026-01-15T142632.500.json
+
+###
+GET http://localhost:8080/product
+Content-Type: application/json
+
+<> 2026-01-15T145918.200.json
+<> 2026-01-15T145753.200.json
+<> 2026-01-15T145744.200.json
+
+###
+GET http://localhost:8080/product?
+    page={{$random.integer(100)}}&
+    size={{$random.integer(100)}}
+    Content-Type: application/json
+
+<> 2026-01-15T151326.200.json

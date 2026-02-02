@@ -1,0 +1,86 @@
+name: Build and push Helm
+on:
+  repository_dispatch:
+    types: [ helm ]
+
+env:
+  HELM_REPO_URL: https://helm.lda-dev.com
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.branch || 'develop' }}
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git curl
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+          helm plugin install https://github.com/chartmuseum/helm-push.git
+
+      - name: Replace image repository and tag
+        run: |
+          sed -i "s|APP_IMAGE_DOCKER_REPOSITORY|${{ github.event.client_payload.image }}|g" chart/values.yaml
+          sed -i "s|APP_IMAGE_DOCKER_TAG|${{ github.event.client_payload.tag }}|g" chart/values.yaml
+
+      - name: Clone template repo
+        run: |
+          git clone https://github.com/daureslaurent/Market-Infra.git helm_template
+
+      - name: Copy templates
+        run: |
+          mkdir -p chart/templates/
+          cp -r helm_template/helm/templates/* chart/templates/
+
+      - name: Replace placeholders
+        run: |
+          find chart/templates/ -type f -exec sed -i "s/template-holder/${{ github.event.client_payload.name }}/g" {} +
+
+      - name: Remove old files
+        run: |
+          find ./chart/templates -type f -name '*.old' -delete
+
+      - name: Lint and package Helm chart
+        run: |
+          helm lint ./chart
+          helm package ./chart
+
+      - name: Push Helm chart
+        env:
+          HELM_REPO_USERNAME: ${{ secrets.HELM_REPO_USERNAME }}
+          HELM_REPO_PASSWORD: ${{ secrets.HELM_REPO_PASSWORD }}
+        run: |
+          helm cm-push ./*.tgz "$HELM_REPO_URL" --username "$HELM_REPO_USERNAME" --password "$HELM_REPO_PASSWORD" --force
+
+
+      - name: Trigger infra update
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.INFRA_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/daureslaurent/Market-Infra/dispatches \
+            -d '{
+              "event_type": "helm-deploy",
+              "client_payload": {
+                "helm_name": "'${{ github.event.client_payload.name }}'"
+              }
+            }'

@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003
+      author: lda
+      changes:
+        - createTable:
+            tableName: product_tags
+            columns:
+              - column:
+                  name: product_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tag_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: product_tags
+            columnNames: product_id, tag_id
+            constraintName: pk_product_tags
+        - addForeignKeyConstraint:
+            baseTableName: product_tags
+            baseColumnNames: product_id
+            referencedTableName: PRODUCT
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            constraintName: fk_product_tags_product
+        - addForeignKeyConstraint:
+            baseTableName: product_tags
+            baseColumnNames: tag_id
+            referencedTableName: TAG
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            constraintName: fk_product_tags_tag
+        - createIndex:
+            tableName: product_tags
+            indexName: idx_product_tags_product
+            columns:
+              - column:
+                  name: product_id
+        - createIndex:
+            tableName: product_tags
+            indexName: idx_product_tags_tag
+            columns:
+              - column:
+                  name: tag_id
+      rollback:
+        - dropTable:
+            tableName: product_tags
+            cascadeConstraints: true

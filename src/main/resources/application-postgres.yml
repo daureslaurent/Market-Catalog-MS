@@ -1,0 +1,30 @@
+spring:
+
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_READ_URL}
+    username: ${POSTGRES_READ_USER}
+    password: ${POSTGRES_READ_PASSWORD}
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+
+#    write:
+#      url: jdbc:postgresql://${POSTGRES_WRITE_URL}
+#      username: ${POSTGRES_WRITE_USER}
+#      password: ${POSTGRES_WRITE_PASSWORD}
+#      hikari:
+#        connection-timeout: 20000
+#        maximum-pool-size: 5
+#
+#  liquibase:
+#    enabled: true
+#    url: jdbc:postgresql://${POSTGRES_WRITE_URL}
+#    user: ${POSTGRES_WRITE_USER}
+#    password: ${POSTGRES_WRITE_PASSWORD}
+
+
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none

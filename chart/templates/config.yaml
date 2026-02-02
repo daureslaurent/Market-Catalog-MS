@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: market-catalog-ms-config
+data:
+  SPRING_PROFILES_ACTIVE: postgres,k8s
+  LOG_LEVEL: DEBUG
