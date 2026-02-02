@@ -1,4 +1,4 @@
-package lda.services.market.infra.persistence.product.entity;
+package lda.services.market.infra.persistence.product.read.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "TAG")
-public class TagEntity {
+public class TagReadEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,6 +26,6 @@ public class TagEntity {
     private String name;
 
     @ManyToMany(mappedBy = "tags")
-    private Set<ProductEntity> products = new HashSet<>();
+    private Set<ProductReadEntity> products = new HashSet<>();
 
 }
