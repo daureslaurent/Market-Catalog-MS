@@ -59,7 +59,7 @@ service:
   portContainer: 8080
 
 ingress:
-  enabled: true
+  enabled: false
 #  className: ""
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: market-catalog-ms
-description: Order microservice for market app
+description: Order microservice for market
 
 # A chart can be either an 'application' or a 'library' chart.
 #
