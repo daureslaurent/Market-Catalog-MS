@@ -6,9 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
-public interface ProductInput {
+public interface ProductQueryInput {
     Product retrieveById(final UUID id);
     Page<Product> retrieveByPage(final Pageable page);
-    Product addProduct(final Product product);
-    Product updateQuantity(final UUID id, final int quantity);
 }

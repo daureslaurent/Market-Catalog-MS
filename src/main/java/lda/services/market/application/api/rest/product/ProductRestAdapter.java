@@ -5,7 +5,8 @@ import lda.services.market.application.api.rest.product.model.ProductCreateReque
 import lda.services.market.application.api.rest.product.model.ProductDetalResponse;
 import lda.services.market.application.api.rest.product.model.ProductResponse;
 import lda.services.market.domain.product.exception.ProductNotFoundException;
-import lda.services.market.domain.product.port.ProductInput;
+import lda.services.market.domain.product.port.ProductCommandInput;
+import lda.services.market.domain.product.port.ProductQueryInput;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,14 +21,15 @@ import java.util.UUID;
 @RequestMapping("/product")
 public class ProductRestAdapter {
 
-    private final ProductInput productInput;
+    private final ProductQueryInput productQueryInput;
+    private final ProductCommandInput productCommandInput;
     private final ProductRestMapper mapper;
 
     @PostMapping
     public ProductResponse createProduct(@RequestBody ProductCreateRequest productCreateRequest) {
         final var product = mapper.toProduct(productCreateRequest);
         return mapper.toProductResponse(
-                productInput.addProduct(product)
+                productCommandInput.addProduct(product)
         );
     }
 
@@ -37,7 +39,7 @@ public class ProductRestAdapter {
             @RequestParam(defaultValue = "5") int size
     ) {
         final var pageRequest = PageRequest.of(page, size);
-        return productInput.retrieveByPage(pageRequest)
+        return productQueryInput.retrieveByPage(pageRequest)
                 .map(mapper::toProductDetailResponse);
     }
 
@@ -45,7 +47,7 @@ public class ProductRestAdapter {
     public ProductDetalResponse getProductById(@PathVariable final String id) {
         final var uuid = UUID.fromString(id);
         return mapper.toProductDetailResponse(
-                productInput.retrieveById(uuid)
+                productQueryInput.retrieveById(uuid)
         );
     }
 

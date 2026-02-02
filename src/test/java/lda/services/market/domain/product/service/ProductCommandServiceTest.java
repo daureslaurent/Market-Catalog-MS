@@ -1,9 +1,7 @@
 package lda.services.market.domain.product.service;
 
 import lda.services.market.domain.product.ProductSampleTest;
-import lda.services.market.domain.product.exception.ProductNotFoundException;
 import lda.services.market.domain.product.exception.ProductQuantityTooSmallException;
-import lda.services.market.domain.product.port.ProductReadOutput;
 import lda.services.market.domain.product.port.ProductWriteOutput;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,62 +10,21 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-class ProductServiceTest {
+class ProductCommandServiceTest {
 
     @InjectMocks
-    private ProductService productService;
-
-    @Mock
-    private ProductReadOutput productReadOutput;
+    private ProductCommandService productCommandService;
 
     @Mock
     private ProductWriteOutput productWriteOutput;
-
-    @Test
-    void should_retrieve_product() {
-        final var product = ProductSampleTest.domain();
-
-        // Given
-        when(productReadOutput.getById(product.id()))
-                .thenReturn(Optional.of(product));
-
-        // When
-        final var productTest = productService.retrieveById(product.id());
-
-        // Then
-        assertThat(productTest).isNotNull();
-        assertThat(productTest).isEqualTo(product);
-
-        verify(productReadOutput).getById(product.id());
-    }
-
-    @Test
-    void should_throw_notFoundException_when_empty() {
-
-        final var fakeId = UUID.randomUUID();
-
-        // Given
-        when(productReadOutput.getById(any()))
-                .thenReturn(Optional.empty());
-
-        // When
-        final var throwed = assertThrows(ProductNotFoundException.class, () -> productService.retrieveById(fakeId));
-
-        // Then
-        assertThat(throwed).isNotNull();
-        assertThat(throwed).isInstanceOf(ProductNotFoundException.class);
-
-        verify(productReadOutput).getById(fakeId);
-    }
 
     @Test
     void should_add_product_when_ok() {
@@ -82,7 +39,7 @@ class ProductServiceTest {
                 .thenReturn(productReturned);
 
         // When
-        final var productAdded = productService.addProduct(product);
+        final var productAdded = productCommandService.addProduct(product);
 
         // Then
         assertThat(productAdded).isNotNull();
@@ -107,13 +64,11 @@ class ProductServiceTest {
                 .thenReturn(productWanted);
 
         // When
-        final var productTest = productService.updateQuantity(product.id(), quantity);
+        final var productTest = productCommandService.updateQuantity(product.id(), quantity);
 
         // Then
         assertThat(productTest).isNotNull();
         assertThat(productTest).isEqualTo(productWanted);
-
-        verify(productReadOutput, never()).getById(product.id());
 
         verify(productWriteOutput).getById(product.id());
         verify(productWriteOutput).save(productWanted);
@@ -132,24 +87,14 @@ class ProductServiceTest {
 
         // When
         final var throwed = assertThrows(ProductQuantityTooSmallException.class, () ->
-                productService.updateQuantity(productId, quantity));
+                productCommandService.updateQuantity(productId, quantity));
 
         // Then
         assertThat(throwed).isNotNull();
         assertThat(throwed).isInstanceOf(ProductQuantityTooSmallException.class);
 
-        verify(productReadOutput, never()).getById(product.id());
-
         verify(productWriteOutput).getById(product.id());
         verify(productWriteOutput, never()).save(any());
     }
-
-
-
-
-
-
-
-
 
 }
