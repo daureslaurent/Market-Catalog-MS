@@ -3,7 +3,8 @@ package lda.services.market.domain.product.service;
 import lda.services.market.domain.product.ProductSampleTest;
 import lda.services.market.domain.product.exception.ProductNotFoundException;
 import lda.services.market.domain.product.exception.ProductQuantityTooSmallException;
-import lda.services.market.domain.product.port.ProductOutput;
+import lda.services.market.domain.product.port.ProductReadOutput;
+import lda.services.market.domain.product.port.ProductWriteOutput;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,14 +27,17 @@ class ProductServiceTest {
     private ProductService productService;
 
     @Mock
-    private ProductOutput productOutput;
+    private ProductReadOutput productReadOutput;
+
+    @Mock
+    private ProductWriteOutput productWriteOutput;
 
     @Test
     void should_retrieve_product() {
         final var product = ProductSampleTest.domain();
 
         // Given
-        when(productOutput.getById(product.id()))
+        when(productReadOutput.getById(product.id()))
                 .thenReturn(Optional.of(product));
 
         // When
@@ -43,7 +47,7 @@ class ProductServiceTest {
         assertThat(productTest).isNotNull();
         assertThat(productTest).isEqualTo(product);
 
-        verify(productOutput).getById(product.id());
+        verify(productReadOutput).getById(product.id());
     }
 
     @Test
@@ -52,7 +56,7 @@ class ProductServiceTest {
         final var fakeId = UUID.randomUUID();
 
         // Given
-        when(productOutput.getById(any()))
+        when(productReadOutput.getById(any()))
                 .thenReturn(Optional.empty());
 
         // When
@@ -62,7 +66,7 @@ class ProductServiceTest {
         assertThat(throwed).isNotNull();
         assertThat(throwed).isInstanceOf(ProductNotFoundException.class);
 
-        verify(productOutput).getById(fakeId);
+        verify(productReadOutput).getById(fakeId);
     }
 
     @Test
@@ -74,7 +78,7 @@ class ProductServiceTest {
         final var productReturned = ProductSampleTest.domain();
 
         // Given
-        when(productOutput.save(product))
+        when(productWriteOutput.save(product))
                 .thenReturn(productReturned);
 
         // When
@@ -85,7 +89,7 @@ class ProductServiceTest {
         assertThat(productAdded).isEqualTo(productReturned);
         assertThat(productAdded.id()).isNotNull();
 
-        verify(productOutput).save(product);
+        verify(productWriteOutput).save(product);
     }
 
     @Test
@@ -97,9 +101,9 @@ class ProductServiceTest {
                 .build();
 
         // Given
-        when(productOutput.getById(product.id()))
+        when(productWriteOutput.getById(product.id()))
                 .thenReturn(Optional.of(product));
-        when(productOutput.save(productWanted))
+        when(productWriteOutput.save(productWanted))
                 .thenReturn(productWanted);
 
         // When
@@ -109,29 +113,35 @@ class ProductServiceTest {
         assertThat(productTest).isNotNull();
         assertThat(productTest).isEqualTo(productWanted);
 
-        verify(productOutput).getById(product.id());
-        verify(productOutput).save(productWanted);
+        verify(productReadOutput, never()).getById(product.id());
+
+        verify(productWriteOutput).getById(product.id());
+        verify(productWriteOutput).save(productWanted);
+
     }
 
     @Test
     void updateQuantity_should_throw_when_tooSmall() {
         final var product = ProductSampleTest.domain();
+        final var productId = product.id();
         final var quantity = -5;
 
         // Given
-        when(productOutput.getById(product.id()))
+        when(productWriteOutput.getById(product.id()))
                 .thenReturn(Optional.of(product));
 
         // When
         final var throwed = assertThrows(ProductQuantityTooSmallException.class, () ->
-                productService.updateQuantity(product.id(), quantity));
+                productService.updateQuantity(productId, quantity));
 
         // Then
         assertThat(throwed).isNotNull();
         assertThat(throwed).isInstanceOf(ProductQuantityTooSmallException.class);
 
-        verify(productOutput).getById(product.id());
-        verify(productOutput, never()).save(any());
+        verify(productReadOutput, never()).getById(product.id());
+
+        verify(productWriteOutput).getById(product.id());
+        verify(productWriteOutput, never()).save(any());
     }
 
 

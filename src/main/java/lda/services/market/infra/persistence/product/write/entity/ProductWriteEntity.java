@@ -1,7 +1,11 @@
-package lda.services.market.infra.persistence.product.entity;
+package lda.services.market.infra.persistence.product.write.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lda.services.market.infra.persistence.product.read.entity.TagReadEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +17,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "PRODUCT")
-public class ProductEntity {
+public class ProductWriteEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -34,5 +38,5 @@ public class ProductEntity {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<TagEntity> tags = new HashSet<>();
+    private Set<TagReadEntity> tags = new HashSet<>();
 }

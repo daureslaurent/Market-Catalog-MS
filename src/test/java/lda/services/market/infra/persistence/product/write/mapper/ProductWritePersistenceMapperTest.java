@@ -1,4 +1,4 @@
-package lda.services.market.infra.persistence.product.mapper;
+package lda.services.market.infra.persistence.product.write.mapper;
 
 import lda.services.market.domain.product.ProductSampleTest;
 import org.junit.jupiter.api.Test;
@@ -6,20 +6,20 @@ import org.mapstruct.factory.Mappers;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class ProductPersistenceMapperTest {
+class ProductWritePersistenceMapperTest {
 
-    private final ProductPersistenceMapper productPersistenceMapper =
-            Mappers.getMapper(ProductPersistenceMapper.class);
+    private final ProductWritePersistenceMapper productWritePersistenceMapper =
+            Mappers.getMapper(ProductWritePersistenceMapper.class);
 
     @Test
     void toDomain() {
 
         // Given
-        final var entity = ProductSampleTest.entity();
+        final var entity = ProductSampleTest.entityWrite();
         final var domain = ProductSampleTest.domain(entity.getId());
 
         // When
-        final var domainReturned = productPersistenceMapper.toDomain(entity);
+        final var domainReturned = productWritePersistenceMapper.toDomain(entity);
 
         // Then
         assertThat(domainReturned).isNotNull();
@@ -30,11 +30,11 @@ class ProductPersistenceMapperTest {
     void toEntity() {
 
         // Given
-        final var entity = ProductSampleTest.entity();
+        final var entity = ProductSampleTest.entityWrite();
         final var domain = ProductSampleTest.domain(entity.getId());
 
         // When
-        final var entityReturned = productPersistenceMapper.toEntity(domain);
+        final var entityReturned = productWritePersistenceMapper.toEntity(domain);
 
         // Then
         assertThat(entityReturned).isNotNull();

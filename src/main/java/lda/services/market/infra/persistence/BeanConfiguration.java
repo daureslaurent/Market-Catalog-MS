@@ -1,6 +1,7 @@
 package lda.services.market.infra.persistence;
 
-import lda.services.market.domain.product.port.ProductOutput;
+import lda.services.market.domain.product.port.ProductReadOutput;
+import lda.services.market.domain.product.port.ProductWriteOutput;
 import lda.services.market.domain.product.service.ProductService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +10,10 @@ import org.springframework.context.annotation.Configuration;
 public class BeanConfiguration {
 
     @Bean
-    ProductService productService(ProductOutput productOutput) {
-        return new ProductService(productOutput);
+    ProductService productService(
+            ProductReadOutput productReadOutput,
+            ProductWriteOutput productWriteOutput) {
+        return new ProductService(productReadOutput, productWriteOutput);
     }
 
 }

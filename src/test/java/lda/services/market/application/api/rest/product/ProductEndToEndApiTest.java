@@ -2,8 +2,8 @@ package lda.services.market.application.api.rest.product;
 
 import lda.services.market.application.api.rest.product.model.ProductCreateRequest;
 import lda.services.market.application.api.rest.product.model.ProductResponse;
-import lda.services.market.infra.persistence.product.entity.ProductEntity;
-import lda.services.market.infra.persistence.product.repository.ProductRepository;
+import lda.services.market.infra.persistence.product.read.entity.ProductReadEntity;
+import lda.services.market.infra.persistence.product.read.repository.ProductReadRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,12 +22,12 @@ class ProductEndToEndApiTest {
     private int port;
 
     @Autowired
-    private ProductRepository productRepository;
+    private ProductReadRepository productReadRepository;
 
     @BeforeEach
     void beforeAll() {
-        productRepository.deleteAll();
-        productRepository.save(ProductEntity.builder()
+        productReadRepository.deleteAll();
+        productReadRepository.save(ProductReadEntity.builder()
                 .name("FakedProduct")
                 .quantity(50)
                 .build()
@@ -36,7 +36,7 @@ class ProductEndToEndApiTest {
 
     @AfterEach
     void afterEach() {
-        productRepository.deleteAll();
+        productReadRepository.deleteAll();
     }
 
     @Test

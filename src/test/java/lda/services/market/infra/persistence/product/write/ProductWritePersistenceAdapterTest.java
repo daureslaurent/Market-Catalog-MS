@@ -1,8 +1,8 @@
-package lda.services.market.infra.persistence.product;
+package lda.services.market.infra.persistence.product.write;
 
 import lda.services.market.domain.product.ProductSampleTest;
-import lda.services.market.infra.persistence.product.mapper.ProductPersistenceMapper;
-import lda.services.market.infra.persistence.product.repository.ProductRepository;
+import lda.services.market.infra.persistence.product.write.mapper.ProductWritePersistenceMapper;
+import lda.services.market.infra.persistence.product.write.repository.ProductWriteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,23 +17,23 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ProductPersistenceAdapterTest {
+class ProductWritePersistenceAdapterTest {
 
     @InjectMocks
-    private ProductPersistenceAdapter productPersistenceAdapter;
+    private ProductWritePersistenceAdapter productPersistenceAdapter;
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductWriteRepository productWriteRepository;
 
     @Mock
-    private ProductPersistenceMapper productPersistenceMapper;
+    private ProductWritePersistenceMapper productWritePersistenceMapper;
 
 
     @Test
     void getById_whenNotFound_then_empty() {
 
         // Given
-        when(productRepository.findById(any()))
+        when(productWriteRepository.findById(any()))
                 .thenReturn(Optional.empty());
 
         // When
@@ -43,19 +43,19 @@ class ProductPersistenceAdapterTest {
         assertThat(product).isNotNull();
         assertThat(product).isEmpty();
 
-        verify(productRepository).findById(any());
-        verify(productPersistenceMapper, never()).toDomain(any());
+        verify(productWriteRepository).findById(any());
+        verify(productWritePersistenceMapper, never()).toDomain(any());
     }
 
     @Test
     void getById_when_nominal() {
-        final var productEntity = ProductSampleTest.entity();
+        final var productEntity = ProductSampleTest.entityWrite();
         final var productDomain = ProductSampleTest.domain();
 
         // Given
-        when(productRepository.findById(productEntity.getId()))
+        when(productWriteRepository.findById(productEntity.getId()))
                 .thenReturn(Optional.of(productEntity));
-        when(productPersistenceMapper.toDomain(productEntity))
+        when(productWritePersistenceMapper.toDomain(productEntity))
                 .thenReturn(productDomain);
 
         // When
@@ -66,8 +66,8 @@ class ProductPersistenceAdapterTest {
         assertThat(productReturned).isPresent();
         assertThat(productReturned).contains(productDomain);
 
-        verify(productRepository).findById(productEntity.getId());
-        verify(productPersistenceMapper).toDomain(productEntity);
+        verify(productWriteRepository).findById(productEntity.getId());
+        verify(productWritePersistenceMapper).toDomain(productEntity);
     }
 
     @Test
@@ -76,15 +76,15 @@ class ProductPersistenceAdapterTest {
                 .toBuilder()
                 .id(null)
                 .build();
-        final var productEntity = ProductSampleTest.entity();
+        final var productEntity = ProductSampleTest.entityWrite();
         productEntity.setId(null);
 
         // Given
-        when(productPersistenceMapper.toEntity(productDomain))
+        when(productWritePersistenceMapper.toEntity(productDomain))
                 .thenReturn(productEntity);
-        when(productPersistenceMapper.toDomain(productEntity))
+        when(productWritePersistenceMapper.toDomain(productEntity))
                 .thenReturn(productDomain);
-        when(productRepository.save(productEntity))
+        when(productWriteRepository.save(productEntity))
                 .thenReturn(productEntity);
 
         // When
@@ -94,9 +94,9 @@ class ProductPersistenceAdapterTest {
         assertThat(productSaved).isNotNull();
         assertThat(productSaved).isEqualTo(productDomain);
 
-        verify(productPersistenceMapper).toEntity(productDomain);
-        verify(productPersistenceMapper).toDomain(productEntity);
-        verify(productRepository).save(productEntity);
+        verify(productWritePersistenceMapper).toEntity(productDomain);
+        verify(productWritePersistenceMapper).toDomain(productEntity);
+        verify(productWriteRepository).save(productEntity);
     }
 
 }
