@@ -1,4 +1,4 @@
-package lda.services.market.infra.json;
+package lda.services.market.infra.persistence.streambox.json;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

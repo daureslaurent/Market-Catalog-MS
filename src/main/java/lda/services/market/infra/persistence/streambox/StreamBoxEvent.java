@@ -1,11 +1,11 @@
-package lda.services.market.infra.persistence.product.outbox.model;
+package lda.services.market.infra.persistence.streambox;
 
 import lombok.Builder;
 
 import java.util.UUID;
 
 @Builder
-public record ProductOutboxEvent<T>(
+public record StreamBoxEvent<T>(
         UUID id,
         String type,
         T payload

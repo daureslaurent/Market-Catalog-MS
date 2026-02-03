@@ -35,7 +35,7 @@ class ProductCommandServiceTest {
         final var productReturned = ProductSampleTest.domain();
 
         // Given
-        when(productWriteOutput.save(product))
+        when(productWriteOutput.create(product))
                 .thenReturn(productReturned);
 
         // When
@@ -46,7 +46,7 @@ class ProductCommandServiceTest {
         assertThat(productAdded).isEqualTo(productReturned);
         assertThat(productAdded.id()).isNotNull();
 
-        verify(productWriteOutput).save(product);
+        verify(productWriteOutput).create(product);
     }
 
     @Test
