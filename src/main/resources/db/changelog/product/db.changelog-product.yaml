@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/product/002-create-tag-table.yaml
   - include:
       file: db/changelog/product/003-join-table-product-tag.yaml
+  - include:
+      file: db/changelog/product/004-create-outbox-table.yaml

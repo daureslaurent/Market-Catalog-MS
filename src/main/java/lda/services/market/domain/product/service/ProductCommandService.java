@@ -16,7 +16,7 @@ public class ProductCommandService implements ProductCommandInput {
 
     @Override
     public Product addProduct(Product product) {
-        return productWriteOutput.save(product);
+        return productWriteOutput.create(product);
     }
 
     @Transactional

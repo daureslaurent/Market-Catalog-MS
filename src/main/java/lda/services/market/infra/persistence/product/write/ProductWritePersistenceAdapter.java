@@ -2,7 +2,7 @@ package lda.services.market.infra.persistence.product.write;
 
 import lda.services.market.domain.product.model.Product;
 import lda.services.market.domain.product.port.ProductWriteOutput;
-import lda.services.market.infra.persistence.product.outbox.ProductOutboxAdapter;
+import lda.services.market.infra.persistence.product.write.outbox.ProductOutboxAdapter;
 import lda.services.market.infra.persistence.product.write.mapper.ProductWritePersistenceMapper;
 import lda.services.market.infra.persistence.product.write.repository.ProductWriteRepository;
 import lombok.AllArgsConstructor;
@@ -28,10 +28,6 @@ public class ProductWritePersistenceAdapter implements ProductWriteOutput {
                 .map(mapper::toDomain);
     }
 
-    /**
-     * @deprecated (do not implement outbox+CQRS pattern -> change save() to a command)
-     */
-    @Deprecated(forRemoval = true)
     @Override
     public Product save(Product product) {
         final var entity = mapper.toEntity(product);
