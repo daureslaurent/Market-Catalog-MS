@@ -1,7 +1,6 @@
 package lda.services.market.infra.persistence.product.write.outbox;
 
-import lda.services.market.infra.persistence.streambox.StreamBoxInput;
-import lda.services.market.infra.persistence.product.write.outbox.entity.ProductOutboxEventEntity;
+import com.lda.streambox.json.JsonConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,17 +12,26 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("java:S1602")
 public class ProductOutboxScheduler {
 
-    private final StreamBoxInput<ProductOutboxEventEntity> outboxInput;
+    private final ProductOutboxAdapter outboxInput;
+
+    private final JsonConverter jsonConverter;
+    private final FakeKafkaContainer fakeKafkaContainer;
 
     @Scheduled(fixedRate = 5000)
     public void consumeOutbox() {
-        log.info("Consuming outbox");
         outboxInput.lockNextBatch(100)
                 .forEach(outbox -> {
+                            log.info("Produce event {}", outbox.getId());
                             // Send event to kafka
+
+                            // Test Impl
+                            final var jsonKafka = jsonConverter.toJson(outbox);
+                            log.info("Faking kafka ... {}", jsonKafka);
+                            fakeKafkaContainer.addJson(jsonKafka);
 
                             // Delete event from outbox
                             outboxInput.finish(outbox);
+                            log.info("Finishing outbox event {}", outbox.getId());
                         }
                 );
     }

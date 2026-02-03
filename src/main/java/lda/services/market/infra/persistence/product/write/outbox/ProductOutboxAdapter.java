@@ -1,9 +1,9 @@
 package lda.services.market.infra.persistence.product.write.outbox;
 
+import com.lda.streambox.entity.StreamBoxBaseStatusEnum;
+import com.lda.streambox.model.StreamBoxEvent;
+import com.lda.streambox.port.StreamBoxInput;
 import lda.services.market.domain.product.model.Product;
-import lda.services.market.infra.persistence.streambox.entity.StreamBoxBaseStatusEnum;
-import lda.services.market.infra.persistence.streambox.StreamBoxEvent;
-import lda.services.market.infra.persistence.streambox.StreamBoxInput;
 import lda.services.market.infra.persistence.product.write.outbox.entity.ProductOutboxEventEntity;
 import lda.services.market.infra.persistence.product.write.outbox.mapper.ProductOutboxMapper;
 import lda.services.market.infra.persistence.product.event.ProductCreateEvent;
@@ -28,8 +28,7 @@ public class ProductOutboxAdapter implements StreamBoxInput<ProductOutboxEventEn
                 .type(event.getClass().getSimpleName())
                 .payload(event)
                 .build();
-        final var outboxEntity = mapper.toEntity(outboxEvent);
-        productOutboxRepository.save(outboxEntity);
+        this.addToBox(mapper.toEntity(outboxEvent));
     }
 
     @Override
@@ -41,6 +40,11 @@ public class ProductOutboxAdapter implements StreamBoxInput<ProductOutboxEventEn
     public void finish(ProductOutboxEventEntity outboxEvent) {
         outboxEvent.setStatus(StreamBoxBaseStatusEnum.FINISHED);
         productOutboxRepository.save(outboxEvent);
+    }
+
+    @Override
+    public void addToBox(ProductOutboxEventEntity productOutboxEventEntity) {
+        productOutboxRepository.save(productOutboxEventEntity);
     }
 
 }
