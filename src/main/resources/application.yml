@@ -7,6 +7,9 @@ spring:
       ddl-auto: none # liquidBase
     open-in-view: false
     show-sql: false
+    properties:
+      hibernate:
+        show_sql: false
 
   liquibase:
     enabled: true
