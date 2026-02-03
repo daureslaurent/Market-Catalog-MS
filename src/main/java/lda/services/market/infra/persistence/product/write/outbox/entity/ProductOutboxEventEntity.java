@@ -1,7 +1,7 @@
 package lda.services.market.infra.persistence.product.write.outbox.entity;
 
+import com.lda.streambox.entity.StreamBoxBasePayloadEntity;
 import jakarta.persistence.*;
-import lda.services.market.infra.persistence.streambox.entity.StreamBoxBasePayloadEntity;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 

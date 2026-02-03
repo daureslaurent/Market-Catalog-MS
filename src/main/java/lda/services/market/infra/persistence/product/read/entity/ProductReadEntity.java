@@ -3,8 +3,6 @@ package lda.services.market.infra.persistence.product.read.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -12,10 +10,10 @@ import java.util.UUID;
 @Data
 @Builder
 @Entity
-@Table(name = "PRODUCT")
+@Table(name = "PRODUCT_READ")
 public class ProductReadEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
     private UUID id;
 
     private String name;
@@ -28,11 +26,11 @@ public class ProductReadEntity {
 
     private String pictureId;
 
-    @ManyToMany
-    @JoinTable(
-            name = "product_tags",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<TagReadEntity> tags = new HashSet<>();
+//    @ManyToMany
+//    @JoinTable(
+//            name = "product_tags",
+//            joinColumns = @JoinColumn(name = "product_id"),
+//            inverseJoinColumns = @JoinColumn(name = "tag_id")
+//    )
+//    private Set<TagReadEntity> tags = new HashSet<>();
 }

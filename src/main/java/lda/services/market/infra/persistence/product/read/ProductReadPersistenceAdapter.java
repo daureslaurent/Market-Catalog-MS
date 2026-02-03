@@ -2,10 +2,9 @@ package lda.services.market.infra.persistence.product.read;
 
 import lda.services.market.domain.product.model.Product;
 import lda.services.market.domain.product.port.ProductReadOutput;
+import lda.services.market.infra.persistence.product.read.entity.ProductReadEntity;
 import lda.services.market.infra.persistence.product.read.mapper.ProductReadPersistenceMapper;
-import lda.services.market.infra.persistence.product.read.mapper.TagReadPersistenceMapper;
 import lda.services.market.infra.persistence.product.read.repository.ProductReadRepository;
-import lda.services.market.infra.persistence.product.read.repository.TagReadRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +22,8 @@ public class ProductReadPersistenceAdapter implements ProductReadOutput {
     private final ProductReadPersistenceMapper productMapper;
 
     // Tag
-    private final TagReadRepository tagReadRepository;
-    private final TagReadPersistenceMapper tagMapper;
+//    private final TagReadRepository tagReadRepository;
+//    private final TagReadPersistenceMapper tagMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -38,6 +37,12 @@ public class ProductReadPersistenceAdapter implements ProductReadOutput {
     public Optional<Product> getById(UUID id) {
         return productReadRepository.findById(id)
                 .map(productMapper::toDomain);
+    }
+
+    // Projection
+    public void createProduct(Product product) {
+        final var entity = productMapper.toEntity(product);
+        productReadRepository.save(entity);
     }
 
 }

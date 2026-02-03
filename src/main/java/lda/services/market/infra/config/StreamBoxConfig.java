@@ -1,4 +1,4 @@
-package lda.services.market.infra.persistence.streambox;
+package lda.services.market.infra.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;

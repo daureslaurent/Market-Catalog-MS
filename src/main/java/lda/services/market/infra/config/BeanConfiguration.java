@@ -1,4 +1,4 @@
-package lda.services.market.infra;
+package lda.services.market.infra.config;
 
 import lda.services.market.domain.product.port.ProductReadOutput;
 import lda.services.market.domain.product.port.ProductWriteOutput;

@@ -1,4 +1,4 @@
-package lda.services.market.infra.persistence;
+package lda.services.market.infra.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;

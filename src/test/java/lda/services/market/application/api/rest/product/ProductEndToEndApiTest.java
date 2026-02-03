@@ -28,6 +28,7 @@ class ProductEndToEndApiTest {
     void beforeAll() {
         productReadRepository.deleteAll();
         productReadRepository.save(ProductReadEntity.builder()
+                .id(UUID.randomUUID())
                 .name("FakedProduct")
                 .quantity(50)
                 .build()
