@@ -2,6 +2,7 @@ package lda.services.market.infra.persistence.product.write;
 
 import lda.services.market.domain.product.model.Product;
 import lda.services.market.domain.product.port.ProductWriteOutput;
+import lda.services.market.infra.persistence.product.outbox.ProductOutboxAdapter;
 import lda.services.market.infra.persistence.product.write.mapper.ProductWritePersistenceMapper;
 import lda.services.market.infra.persistence.product.write.repository.ProductWriteRepository;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ public class ProductWritePersistenceAdapter implements ProductWriteOutput {
     private final ProductWriteRepository productWriteRepository;
     private final ProductWritePersistenceMapper mapper;
 
-//    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ProductOutboxAdapter outboxAdapter;
 
     @Override
     @Transactional(readOnly = true)
@@ -27,25 +28,27 @@ public class ProductWritePersistenceAdapter implements ProductWriteOutput {
                 .map(mapper::toDomain);
     }
 
+    /**
+     * @deprecated (do not implement outbox+CQRS pattern -> change save() to a command)
+     */
+    @Deprecated(forRemoval = true)
     @Override
     public Product save(Product product) {
         final var entity = mapper.toEntity(product);
-        final var productSaved = mapper.toDomain(
+        return mapper.toDomain(
                 productWriteRepository.save(entity)
         );
-
-//        kafkaTemplate.send(productSaved);
-
-        return productSaved;
     }
 
     @Override
     public Product create(Product product) {
         final var entity = mapper.toEntity(product);
-//        final var outOfBoc = ;
 
-        productWriteRepository.save(entity);
+        final var saved = productWriteRepository.save(entity);
+        final var savedDomain = mapper.toDomain(saved);
 
-        return null;
+        outboxAdapter.createProductEvent(savedDomain);
+
+        return savedDomain;
     }
 }
