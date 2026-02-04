@@ -2,7 +2,6 @@ package lda.services.market.infra.persistence.write.product.repository;
 
 import lda.services.market.infra.persistence.write.product.entity.ProductWriteEntity;
 import org.jspecify.annotations.NullMarked;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +15,6 @@ import java.util.UUID;
 @Transactional(transactionManager = "writeTransactionManager")
 public interface ProductWriteRepository extends CrudRepository<ProductWriteEntity, UUID> {
 
-    @EntityGraph(attributePaths = "tags")
+//    @EntityGraph(attributePaths = "tags")
     Optional<ProductWriteEntity> findById(final UUID id);
 }

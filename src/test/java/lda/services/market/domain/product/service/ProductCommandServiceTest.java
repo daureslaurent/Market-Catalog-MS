@@ -60,7 +60,7 @@ class ProductCommandServiceTest {
         // Given
         when(productWriteOutput.getById(product.id()))
                 .thenReturn(Optional.of(product));
-        when(productWriteOutput.save(productWanted))
+        when(productWriteOutput.changeQuantity(productWanted.id(), productWanted.quantity()))
                 .thenReturn(productWanted);
 
         // When
@@ -71,7 +71,7 @@ class ProductCommandServiceTest {
         assertThat(productTest).isEqualTo(productWanted);
 
         verify(productWriteOutput).getById(product.id());
-        verify(productWriteOutput).save(productWanted);
+        verify(productWriteOutput).changeQuantity(productWanted.id(), productWanted.quantity());
 
     }
 
@@ -86,15 +86,15 @@ class ProductCommandServiceTest {
                 .thenReturn(Optional.of(product));
 
         // When
-        final var throwed = assertThrows(ProductQuantityTooSmallException.class, () ->
+        final var thrown = assertThrows(ProductQuantityTooSmallException.class, () ->
                 productCommandService.updateQuantity(productId, quantity));
 
         // Then
-        assertThat(throwed).isNotNull();
-        assertThat(throwed).isInstanceOf(ProductQuantityTooSmallException.class);
+        assertThat(thrown).isNotNull();
+        assertThat(thrown).isInstanceOf(ProductQuantityTooSmallException.class);
 
         verify(productWriteOutput).getById(product.id());
-        verify(productWriteOutput, never()).save(any());
+        verify(productWriteOutput, never()).changeQuantity(any(), any());
     }
 
 }

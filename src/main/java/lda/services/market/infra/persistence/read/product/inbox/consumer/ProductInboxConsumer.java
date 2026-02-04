@@ -21,7 +21,7 @@ public class ProductInboxConsumer {
 
 
     @Scheduled(fixedRate = 8000)
-    void consume() {
+    public void fakeMessaging() {
         final var data = fakeKafkaContainer.getLastJson();
         if (data != null) {
             log.info("Faked consumer");
