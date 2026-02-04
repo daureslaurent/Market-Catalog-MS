@@ -10,14 +10,54 @@ spring:
 
   datasource:
     read:
-      jdbc-url: jdbc:postgresql://${POSTGRES_READ_URL}
+      url: jdbc:postgresql://${POSTGRES_READ_URL}
       username: ${POSTGRES_READ_USER}
       password: ${POSTGRES_READ_PASSWORD}
+      hikari:
+        pool-name: read-pool
+        maximum-pool-size: 30
+        minimum-idle: 10
+        auto-commit: false
+        # Need refacto on Inbox side
+        #read-only: true
+        transaction-isolation: TRANSACTION_READ_COMMITTED
+#        connection-init-sql: |
+#          SET statement_timeout = '2000';       # 2 seconds
+#          SET idle_in_transaction_session_timeout = '5000';  # 5 seconds
+#        max-lifetime: 240000                 # 4 minutes (less than DB idle timeout)
+#        idle-timeout: 60000                  # 1 minute
+#        connection-timeout: 30000            # 30 seconds
+#        validation-timeout: 5000             # 5 seconds
+#        connection-test-query: SELECT 1
+
     write:
-      jdbc-url: jdbc:postgresql://${POSTGRES_WRITE_URL}
+      url: jdbc:postgresql://${POSTGRES_WRITE_URL}
       username: ${POSTGRES_WRITE_USER}
       password: ${POSTGRES_WRITE_PASSWORD}
+      hikari:
+        pool-name: write-pool
+        maximum-pool-size: 10
+        minimum-idle: 2
+        auto-commit: false
+        transaction-isolation: TRANSACTION_READ_COMMITTED
+#        connection-init-sql: |
+#          SET statement_timeout = '5000';       # 5 seconds
+#        max-lifetime: 240000                 # 4 minutes
+#        idle-timeout: 60000                  # 1 minute
+#        connection-timeout: 30000            # 30 seconds
+#        validation-timeout: 5000             # 5 seconds
+#        connection-test-query: SELECT 1
 
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: none
+    properties:
+      hibernate:
+        flushMode: MANUAL
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+        default_batch_fetch_size: 50
+        generate_statistics: false
