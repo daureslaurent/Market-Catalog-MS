@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/read/product/001-create-table.yaml
+#  - include:
+#      file: db/changelog/product/002-create-tag-table.yaml
+#  - include:
+#      file: db/changelog/product/003-join-table-product-tag.yaml
+  - include:
+      file: db/changelog/read/product/004-create-inbox-table.yaml

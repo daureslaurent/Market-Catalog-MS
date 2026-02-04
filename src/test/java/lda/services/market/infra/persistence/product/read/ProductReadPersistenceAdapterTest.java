@@ -1,8 +1,9 @@
 package lda.services.market.infra.persistence.product.read;
 
 import lda.services.market.domain.product.ProductSampleTest;
-import lda.services.market.infra.persistence.product.read.mapper.ProductReadPersistenceMapper;
-import lda.services.market.infra.persistence.product.read.repository.ProductReadRepository;
+import lda.services.market.infra.persistence.read.product.ProductReadPersistenceAdapter;
+import lda.services.market.infra.persistence.read.product.mapper.ProductReadPersistenceMapper;
+import lda.services.market.infra.persistence.read.product.repository.ProductReadRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

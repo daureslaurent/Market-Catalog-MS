@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001
+      author: lda
+      changes:
+        - createTable:
+            tableName: PRODUCT_READ
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: detail
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: picture_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
