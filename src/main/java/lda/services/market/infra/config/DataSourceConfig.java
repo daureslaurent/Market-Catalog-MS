@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 import org.springframework.boot.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,24 +16,44 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-//@Profile("postgres_w")
 @Configuration
 @EnableTransactionManagement
 public class DataSourceConfig {
 
+    @Bean
+    @ConfigurationProperties("spring.datasource.read")
+    public DataSourceProperties readDataSourceProperties() {
+        return new DataSourceProperties();
+    }
+
     @Bean(name = "readDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.read")
-    public HikariDataSource readDataSource() {
-        return DataSourceBuilder.create()
+    @ConfigurationProperties("spring.datasource.read.hikari")
+    public HikariDataSource readDataSource(
+            @Qualifier("readDataSourceProperties")
+            DataSourceProperties properties) {
+
+        return properties
+                .initializeDataSourceBuilder()
                 .type(HikariDataSource.class)
                 .build();
     }
 
+    @Bean
+    @Primary
+    @ConfigurationProperties("spring.datasource.write")
+    public DataSourceProperties writeDataSourceProperties() {
+        return new DataSourceProperties();
+    }
+
     @Bean(name = "writeDataSource")
     @Primary
-    @ConfigurationProperties(prefix = "spring.datasource.write")
-    public HikariDataSource writeDataSource() {
-        return DataSourceBuilder.create()
+    @ConfigurationProperties("spring.datasource.write.hikari")
+    public HikariDataSource writeDataSource(
+            @Qualifier("writeDataSourceProperties")
+            DataSourceProperties properties) {
+
+        return properties
+                .initializeDataSourceBuilder()
                 .type(HikariDataSource.class)
                 .build();
     }
@@ -63,13 +83,15 @@ public class DataSourceConfig {
 
     @Bean(name = "readTransactionManager")
     public PlatformTransactionManager readTransactionManager(
-            @Qualifier("readEntityManagerFactory") EntityManagerFactory emf) {
+            @Qualifier("readEntityManagerFactory")
+            EntityManagerFactory emf) {
         return new JpaTransactionManager(emf);
     }
 
     @Bean(name = "writeTransactionManager")
     public PlatformTransactionManager writeTransactionManager(
-            @Qualifier("writeEntityManagerFactory") EntityManagerFactory emf) {
+            @Qualifier("writeEntityManagerFactory")
+            EntityManagerFactory emf) {
         return new JpaTransactionManager(emf);
     }
 }
