@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002
+      author: lda
+      context: ddl
+      changes:
+        - createTable:
+            tableName: TAG
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: TAG
+            indexName: idx_tag_name
+            unique: true
+            columns:
+              - column:
+                  name: name
+      rollback:
+        - dropTable:
+            tableName: TAG
+            cascadeConstraints: true

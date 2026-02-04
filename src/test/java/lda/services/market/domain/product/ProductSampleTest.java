@@ -2,8 +2,8 @@ package lda.services.market.domain.product;
 
 import lda.services.market.domain.product.model.Product;
 import lda.services.market.domain.product.model.Tag;
-import lda.services.market.infra.persistence.product.read.entity.ProductReadEntity;
-import lda.services.market.infra.persistence.product.write.entity.ProductWriteEntity;
+import lda.services.market.infra.persistence.read.product.entity.ProductReadEntity;
+import lda.services.market.infra.persistence.write.product.entity.ProductWriteEntity;
 
 import java.util.Set;
 import java.util.UUID;

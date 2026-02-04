@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    write:
+      jdbc-url: jdbc:h2:mem:test_write;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+      driver-class-name: org.h2.Driver
+      username: sa
+
+    read:
+      jdbc-url: jdbc:h2:mem:test_read;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+      driver-class-name: org.h2.Driver
+      username: sa
+
+  liquibase:
+    enabled: true

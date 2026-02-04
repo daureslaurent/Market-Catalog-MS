@@ -2,19 +2,21 @@ package lda.services.market.application.api.rest.product;
 
 import lda.services.market.application.api.rest.product.model.ProductCreateRequest;
 import lda.services.market.application.api.rest.product.model.ProductResponse;
-import lda.services.market.infra.persistence.product.read.entity.ProductReadEntity;
-import lda.services.market.infra.persistence.product.read.repository.ProductReadRepository;
+import lda.services.market.infra.persistence.read.product.entity.ProductReadEntity;
+import lda.services.market.infra.persistence.read.product.repository.ProductReadRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ProductEndToEndApiTest {
 
