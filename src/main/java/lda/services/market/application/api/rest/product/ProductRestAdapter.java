@@ -1,6 +1,7 @@
 package lda.services.market.application.api.rest.product;
 
 import lda.services.market.application.api.rest.product.mapper.ProductRestMapper;
+import lda.services.market.application.api.rest.product.model.ProductChangeQuantityRequest;
 import lda.services.market.application.api.rest.product.model.ProductCreateRequest;
 import lda.services.market.application.api.rest.product.model.ProductDetalResponse;
 import lda.services.market.application.api.rest.product.model.ProductResponse;
@@ -48,6 +49,17 @@ public class ProductRestAdapter {
         final var uuid = UUID.fromString(id);
         return mapper.toProductDetailResponse(
                 productQueryInput.retrieveById(uuid)
+        );
+    }
+
+    @PutMapping("/{id}/quantity")
+    public ProductDetalResponse updateQuantityProductById(
+            @PathVariable final String id,
+            @RequestBody ProductChangeQuantityRequest quantityRequest
+    ) {
+        final var uuid = UUID.fromString(id);
+        return mapper.toProductDetailResponse(
+                productCommandInput.updateQuantity(uuid, quantityRequest.quantity())
         );
     }
 

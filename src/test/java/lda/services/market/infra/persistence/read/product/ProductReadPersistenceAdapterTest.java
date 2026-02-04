@@ -1,7 +1,6 @@
-package lda.services.market.infra.persistence.product.read;
+package lda.services.market.infra.persistence.read.product;
 
 import lda.services.market.domain.product.ProductSampleTest;
-import lda.services.market.infra.persistence.read.product.ProductReadPersistenceAdapter;
 import lda.services.market.infra.persistence.read.product.mapper.ProductReadPersistenceMapper;
 import lda.services.market.infra.persistence.read.product.repository.ProductReadRepository;
 import org.junit.jupiter.api.Test;

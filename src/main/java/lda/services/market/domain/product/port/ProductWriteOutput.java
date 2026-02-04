@@ -7,10 +7,8 @@ import java.util.UUID;
 
 public interface ProductWriteOutput {
     Optional<Product> getById(final UUID id);
-    /**
-     * @deprecated (do not implement outbox+CQRS pattern -> change save() to a command)
-     */
-    @Deprecated(forRemoval = true)
-    Product save(final Product product);
+
+    // Commands
     Product create(final Product product);
+    Product changeQuantity(final UUID idProduct, final Integer value);
 }

@@ -4,6 +4,7 @@ import com.lda.streambox.entity.StreamBoxBaseStatusEnum;
 import com.lda.streambox.model.StreamBoxEvent;
 import com.lda.streambox.port.StreamBoxInput;
 import lda.services.market.domain.product.model.Product;
+import lda.services.market.infra.event.product.ProductChangeQuantityEvent;
 import lda.services.market.infra.persistence.write.product.outbox.entity.ProductOutboxEventEntity;
 import lda.services.market.infra.persistence.write.product.outbox.mapper.ProductOutboxMapper;
 import lda.services.market.infra.event.product.ProductCreateEvent;
@@ -29,6 +30,14 @@ public class ProductOutboxAdapter implements StreamBoxInput<ProductOutboxEventEn
                 .payload(event)
                 .build();
         this.addToBox(mapper.toEntity(outboxEvent));
+    }
+
+    public void addEvent(ProductChangeQuantityEvent event) {
+        final var streamEvent = StreamBoxEvent.builder()
+                .type(ProductChangeQuantityEvent.class.getSimpleName())
+                .payload(event)
+                .build();
+        this.addToBox(mapper.toEntity(streamEvent));
     }
 
     @Override

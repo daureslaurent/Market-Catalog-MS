@@ -1,8 +1,8 @@
-package lda.services.market.infra.persistence.product.write;
+package lda.services.market.infra.persistence.write.product;
 
 import lda.services.market.domain.product.ProductSampleTest;
-import lda.services.market.infra.persistence.write.product.ProductWritePersistenceAdapter;
 import lda.services.market.infra.persistence.write.product.mapper.ProductWritePersistenceMapper;
+import lda.services.market.infra.persistence.write.product.outbox.ProductOutboxAdapter;
 import lda.services.market.infra.persistence.write.product.repository.ProductWriteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +29,8 @@ class ProductWritePersistenceAdapterTest {
     @Mock
     private ProductWritePersistenceMapper productWritePersistenceMapper;
 
+    @Mock
+    private ProductOutboxAdapter productOutboxAdapter;
 
     @Test
     void getById_whenNotFound_then_empty() {
@@ -72,7 +74,7 @@ class ProductWritePersistenceAdapterTest {
     }
 
     @Test
-    void save_when_nominal() {
+    void givenCreateProduct_WhenOK_ThenOk() {
         final var productDomain = ProductSampleTest.domain()
                 .toBuilder()
                 .id(null)
@@ -89,7 +91,7 @@ class ProductWritePersistenceAdapterTest {
                 .thenReturn(productEntity);
 
         // When
-        final var productSaved = productPersistenceAdapter.save(productDomain);
+        final var productSaved = productPersistenceAdapter.create(productDomain);
 
         // Then
         assertThat(productSaved).isNotNull();
@@ -98,6 +100,7 @@ class ProductWritePersistenceAdapterTest {
         verify(productWritePersistenceMapper).toEntity(productDomain);
         verify(productWritePersistenceMapper).toDomain(productEntity);
         verify(productWriteRepository).save(productEntity);
+        verify(productOutboxAdapter).createProductEvent(productDomain);
     }
 
 }

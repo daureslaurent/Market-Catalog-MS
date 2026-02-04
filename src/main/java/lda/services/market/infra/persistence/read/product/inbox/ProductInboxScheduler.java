@@ -14,7 +14,7 @@ public class ProductInboxScheduler {
     private final ProductInboxAdapter inboxInput;
 
     @Scheduled(fixedRate = 7000)
-    public void consumeOutbox() {
+    public void consumeInbox() {
         inboxInput.lockNextBatch(100)
                 .forEach(outbox -> {
                             log.info("Consuming event {}", outbox.getId());
