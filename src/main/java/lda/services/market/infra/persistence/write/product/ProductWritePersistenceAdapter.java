@@ -3,7 +3,7 @@ package lda.services.market.infra.persistence.write.product;
 import lda.services.market.domain.product.exception.ProductNotFoundException;
 import lda.services.market.domain.product.model.Product;
 import lda.services.market.domain.product.port.ProductWriteOutput;
-import lda.services.market.infra.event.product.ProductChangeQuantityEvent;
+import lda.services.market.infra.persistence.projection.ProductChangeQuantityEvent;
 import lda.services.market.infra.persistence.write.product.outbox.ProductOutboxAdapter;
 import lda.services.market.infra.persistence.write.product.mapper.ProductWritePersistenceMapper;
 import lda.services.market.infra.persistence.write.product.repository.ProductWriteRepository;

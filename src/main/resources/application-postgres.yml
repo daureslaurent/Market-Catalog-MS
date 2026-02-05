@@ -1,13 +1,5 @@
 spring:
 
-#  datasource:
-#    url: jdbc:postgresql://${POSTGRES_READ_URL}
-#    username: ${POSTGRES_READ_USER}
-#    password: ${POSTGRES_READ_PASSWORD}
-#    hikari:
-#      connection-timeout: 20000
-#      maximum-pool-size: 5
-
   datasource:
     read:
       url: jdbc:postgresql://${POSTGRES_READ_URL}
@@ -18,17 +10,9 @@ spring:
         maximum-pool-size: 30
         minimum-idle: 10
         auto-commit: false
-        # Need refacto on Inbox side
+        # Work in replica engine context / Streambox not
         #read-only: true
         transaction-isolation: TRANSACTION_READ_COMMITTED
-#        connection-init-sql: |
-#          SET statement_timeout = '2000';       # 2 seconds
-#          SET idle_in_transaction_session_timeout = '5000';  # 5 seconds
-#        max-lifetime: 240000                 # 4 minutes (less than DB idle timeout)
-#        idle-timeout: 60000                  # 1 minute
-#        connection-timeout: 30000            # 30 seconds
-#        validation-timeout: 5000             # 5 seconds
-#        connection-test-query: SELECT 1
 
     write:
       url: jdbc:postgresql://${POSTGRES_WRITE_URL}
@@ -40,13 +24,6 @@ spring:
         minimum-idle: 2
         auto-commit: false
         transaction-isolation: TRANSACTION_READ_COMMITTED
-#        connection-init-sql: |
-#          SET statement_timeout = '5000';       # 5 seconds
-#        max-lifetime: 240000                 # 4 minutes
-#        idle-timeout: 60000                  # 1 minute
-#        connection-timeout: 30000            # 30 seconds
-#        validation-timeout: 5000             # 5 seconds
-#        connection-test-query: SELECT 1
 
   jpa:
     open-in-view: false

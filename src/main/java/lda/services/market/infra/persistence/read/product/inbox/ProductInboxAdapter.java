@@ -1,13 +1,13 @@
-package lda.services.market.infra.persistence.write.product.inbox;
+package lda.services.market.infra.persistence.read.product.inbox;
 
 import com.lda.streambox.entity.StreamBoxBaseStatusEnum;
 import com.lda.streambox.model.StreamBoxEvent;
 import com.lda.streambox.port.StreamBoxInput;
-import lda.services.market.infra.event.product.ProductCreateEvent;
-import lda.services.market.infra.persistence.read.product.ProductReadProjectionAdapter;
-import lda.services.market.infra.persistence.write.product.inbox.entity.ProductInboxEventEntity;
-import lda.services.market.infra.persistence.write.product.inbox.mapper.ProductInboxMapper;
-import lda.services.market.infra.persistence.write.product.inbox.repository.ProductInboxRepository;
+import lda.services.market.infra.persistence.projection.ProductCreateEvent;
+import lda.services.market.infra.persistence.read.product.ProductProjectionAdapter;
+import lda.services.market.infra.persistence.read.product.inbox.entity.ProductInboxEventEntity;
+import lda.services.market.infra.persistence.read.product.inbox.mapper.ProductInboxMapper;
+import lda.services.market.infra.persistence.read.product.inbox.repository.ProductInboxRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class ProductInboxAdapter implements StreamBoxInput<ProductInboxEventEnti
     private final ProductInboxRepository productInboxRepository;
     private final ProductInboxMapper mapper;
 
-    private final ProductReadProjectionAdapter projectionAdapter;
+    private final ProductProjectionAdapter projectionAdapter;
 
     public void createProductEvent(final ProductInboxEventEntity event) {
         final StreamBoxEvent<ProductCreateEvent> e = mapper.toCreateEvent(event);
