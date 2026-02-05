@@ -3,7 +3,7 @@ package lda.services.market.infra.persistence.read.product.inbox;
 import com.lda.streambox.entity.StreamBoxBaseStatusEnum;
 import com.lda.streambox.model.StreamBoxEvent;
 import com.lda.streambox.port.StreamBoxInput;
-import lda.services.market.infra.persistence.projection.ProductCreateEvent;
+import lda.services.market.infra.persistence.projection.product.ProductCreateEvent;
 import lda.services.market.infra.persistence.read.product.ProductProjectionAdapter;
 import lda.services.market.infra.persistence.read.product.inbox.entity.ProductInboxEventEntity;
 import lda.services.market.infra.persistence.read.product.inbox.mapper.ProductInboxMapper;
@@ -36,16 +36,22 @@ public class ProductInboxAdapter implements StreamBoxInput<ProductInboxEventEnti
     }
 
     @Override
-    @Transactional(transactionManager = "readTransactionManager")
     public void finish(ProductInboxEventEntity outboxEvent) {
         outboxEvent.setStatus(StreamBoxBaseStatusEnum.FINISHED);
         productInboxRepository.save(outboxEvent);
     }
 
     @Override
-    @Transactional(transactionManager = "readTransactionManager")
-    public void addToBox(ProductInboxEventEntity event) {
+    public void addEvent(ProductInboxEventEntity event) {
         productInboxRepository.save(event);
+    }
+
+    @Override
+    @Transactional(transactionManager = "readTransactionManager")
+    public void handleEvent(ProductInboxEventEntity event) {
+        log.info("Consuming event {}", event.getId());
+        this.createProductEvent(event);
+        this.finish(event);
     }
 
 }

@@ -28,7 +28,7 @@ public class ProductInboxConsumer {
             final var inboxKafka = jsonConverter.fromJson(data, ProductInboxEventEntity.class);
             inboxKafka.setRefOutbox(inboxKafka.getId());
             inboxKafka.setId(null);
-            productInboxAdapter.addToBox(inboxKafka);
+            productInboxAdapter.addEvent(inboxKafka);
         }
     }
 
