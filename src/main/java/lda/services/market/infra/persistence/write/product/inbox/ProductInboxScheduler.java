@@ -1,4 +1,4 @@
-package lda.services.market.infra.persistence.read.product.inbox;
+package lda.services.market.infra.persistence.write.product.inbox;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
