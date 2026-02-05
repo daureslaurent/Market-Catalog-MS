@@ -1,13 +1,13 @@
-package lda.services.market.infra.persistence.read.product.inbox;
+package lda.services.market.infra.persistence.write.product.inbox;
 
 import com.lda.streambox.entity.StreamBoxBaseStatusEnum;
 import com.lda.streambox.model.StreamBoxEvent;
 import com.lda.streambox.port.StreamBoxInput;
 import lda.services.market.infra.event.product.ProductCreateEvent;
 import lda.services.market.infra.persistence.read.product.ProductReadProjectionAdapter;
-import lda.services.market.infra.persistence.read.product.inbox.entity.ProductInboxEventEntity;
-import lda.services.market.infra.persistence.read.product.inbox.mapper.ProductInboxMapper;
-import lda.services.market.infra.persistence.read.product.inbox.repository.ProductInboxRepository;
+import lda.services.market.infra.persistence.write.product.inbox.entity.ProductInboxEventEntity;
+import lda.services.market.infra.persistence.write.product.inbox.mapper.ProductInboxMapper;
+import lda.services.market.infra.persistence.write.product.inbox.repository.ProductInboxRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

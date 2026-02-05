@@ -1,9 +1,9 @@
-package lda.services.market.infra.persistence.read.product.inbox.mapper;
+package lda.services.market.infra.persistence.write.product.inbox.mapper;
 
 import com.lda.streambox.json.JsonConverter;
 import com.lda.streambox.model.StreamBoxEvent;
 import lda.services.market.infra.event.product.ProductCreateEvent;
-import lda.services.market.infra.persistence.read.product.inbox.entity.ProductInboxEventEntity;
+import lda.services.market.infra.persistence.write.product.inbox.entity.ProductInboxEventEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
