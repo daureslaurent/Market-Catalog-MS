@@ -1,4 +1,4 @@
-package lda.services.market.infra.event.product;
+package lda.services.market.infra.persistence.projection;
 
 import lda.services.market.domain.product.model.Product;
 import lombok.Builder;

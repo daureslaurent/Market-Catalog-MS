@@ -1,4 +1,4 @@
-package lda.services.market.infra.persistence.write.product.inbox.entity;
+package lda.services.market.infra.persistence.read.product.inbox.entity;
 
 import com.lda.streambox.entity.StreamBoxBasePayloadEntity;
 import jakarta.persistence.Column;

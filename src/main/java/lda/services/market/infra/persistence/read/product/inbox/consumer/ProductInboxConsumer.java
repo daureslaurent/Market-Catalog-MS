@@ -1,8 +1,8 @@
-package lda.services.market.infra.persistence.write.product.inbox.consumer;
+package lda.services.market.infra.persistence.read.product.inbox.consumer;
 
 import com.lda.streambox.json.JsonConverter;
-import lda.services.market.infra.persistence.write.product.inbox.ProductInboxAdapter;
-import lda.services.market.infra.persistence.write.product.inbox.entity.ProductInboxEventEntity;
+import lda.services.market.infra.persistence.read.product.inbox.ProductInboxAdapter;
+import lda.services.market.infra.persistence.read.product.inbox.entity.ProductInboxEventEntity;
 import lda.services.market.infra.persistence.write.product.outbox.FakeKafkaContainer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

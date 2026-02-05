@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Component
-public class ProductReadProjectionAdapter {
+public class ProductProjectionAdapter {
 
     private final ProductReadRepository repository;
     private final ProductReadPersistenceMapper mapper;
