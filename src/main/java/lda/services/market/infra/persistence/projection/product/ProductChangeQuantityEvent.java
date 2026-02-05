@@ -1,4 +1,4 @@
-package lda.services.market.infra.persistence.projection;
+package lda.services.market.infra.persistence.projection.product;
 
 import lombok.Builder;
 
