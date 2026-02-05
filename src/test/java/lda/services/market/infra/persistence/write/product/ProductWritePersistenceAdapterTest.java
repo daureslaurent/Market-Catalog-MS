@@ -1,6 +1,8 @@
 package lda.services.market.infra.persistence.write.product;
 
+import com.lda.streambox.model.StreamBoxEvent;
 import lda.services.market.domain.product.ProductSampleTest;
+import lda.services.market.infra.persistence.projection.product.ProductCreateEvent;
 import lda.services.market.infra.persistence.write.product.mapper.ProductWritePersistenceMapper;
 import lda.services.market.infra.persistence.write.product.outbox.ProductOutboxAdapter;
 import lda.services.market.infra.persistence.write.product.repository.ProductWriteRepository;
@@ -82,6 +84,10 @@ class ProductWritePersistenceAdapterTest {
         final var productEntity = ProductSampleTest.entityWrite();
         productEntity.setId(null);
 
+        final var event = ProductCreateEvent.builder()
+                .product(productDomain)
+                .build();
+
         // Given
         when(productWritePersistenceMapper.toEntity(productDomain))
                 .thenReturn(productEntity);
@@ -100,7 +106,7 @@ class ProductWritePersistenceAdapterTest {
         verify(productWritePersistenceMapper).toEntity(productDomain);
         verify(productWritePersistenceMapper).toDomain(productEntity);
         verify(productWriteRepository).save(productEntity);
-        verify(productOutboxAdapter).createProductEvent(productDomain);
+        verify(productOutboxAdapter).addEvent(event);
     }
 
 }

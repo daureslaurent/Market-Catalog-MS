@@ -6,5 +6,5 @@ import lombok.Builder;
 @Builder(toBuilder = true)
 public record ProductCreateEvent (
         Product product
-) {
+) implements StreamEvent {
 }

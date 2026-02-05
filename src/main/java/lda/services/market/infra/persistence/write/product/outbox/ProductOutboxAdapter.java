@@ -6,6 +6,7 @@ import com.lda.streambox.model.StreamBoxEvent;
 import com.lda.streambox.port.StreamBoxInput;
 import lda.services.market.domain.product.model.Product;
 import lda.services.market.infra.persistence.projection.product.ProductChangeQuantityEvent;
+import lda.services.market.infra.persistence.projection.product.StreamEvent;
 import lda.services.market.infra.persistence.write.product.outbox.entity.ProductOutboxEventEntity;
 import lda.services.market.infra.persistence.write.product.outbox.mapper.ProductOutboxMapper;
 import lda.services.market.infra.persistence.projection.product.ProductCreateEvent;
@@ -28,20 +29,9 @@ public class ProductOutboxAdapter implements StreamBoxInput<ProductOutboxEventEn
     private final JsonConverter jsonConverter;
     private final FakeKafkaContainer fakeKafkaContainer;
 
-    public void createProductEvent(final Product product) {
-        final var event = ProductCreateEvent.builder()
-                .product(product)
-                .build();
-        final var outboxEvent = StreamBoxEvent.builder()
-                .type(event.getClass().getSimpleName())
-                .payload(event)
-                .build();
-        this.addToBox(mapper.toEntity(outboxEvent));
-    }
-
-    public void addEvent(ProductChangeQuantityEvent event) {
+    public void addEvent(StreamEvent event) {
         final var streamEvent = StreamBoxEvent.builder()
-                .type(ProductChangeQuantityEvent.class.getSimpleName())
+                .type(event.getClass().getSimpleName())
                 .payload(event)
                 .build();
         this.addToBox(mapper.toEntity(streamEvent));
@@ -74,7 +64,6 @@ public class ProductOutboxAdapter implements StreamBoxInput<ProductOutboxEventEn
         log.info("Faking kafka ... {}", jsonKafka);
         fakeKafkaContainer.addJson(jsonKafka);
 
-        // Delete event from outbox
         this.finish(productOutboxEventEntity);
         log.info("Finishing outbox event {}", productOutboxEventEntity.getId());
     }

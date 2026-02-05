@@ -9,5 +9,5 @@ public record ProductChangeQuantityEvent(
         UUID idProduct,
         Integer changeValue,
         boolean isIncrease
-) {
+) implements StreamEvent {
 }

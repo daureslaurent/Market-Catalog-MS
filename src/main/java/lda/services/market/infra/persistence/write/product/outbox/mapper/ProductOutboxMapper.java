@@ -8,8 +8,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = JsonConverter.class)
 public interface ProductOutboxMapper {
-
     @Mapping(target = "payload", expression = "java(jsonConverter.toJson(event.payload()))")
     ProductOutboxEventEntity toEntity(StreamBoxEvent<?> event);
-
 }

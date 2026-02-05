@@ -4,6 +4,7 @@ import lda.services.market.domain.product.exception.ProductNotFoundException;
 import lda.services.market.domain.product.model.Product;
 import lda.services.market.domain.product.port.ProductWriteOutput;
 import lda.services.market.infra.persistence.projection.product.ProductChangeQuantityEvent;
+import lda.services.market.infra.persistence.projection.product.ProductCreateEvent;
 import lda.services.market.infra.persistence.write.product.outbox.ProductOutboxAdapter;
 import lda.services.market.infra.persistence.write.product.mapper.ProductWritePersistenceMapper;
 import lda.services.market.infra.persistence.write.product.repository.ProductWriteRepository;
@@ -37,7 +38,9 @@ public class ProductWritePersistenceAdapter implements ProductWriteOutput {
         final var saved = productWriteRepository.save(entity);
         final var savedDomain = mapper.toDomain(saved);
 
-        outboxAdapter.createProductEvent(savedDomain);
+        outboxAdapter.addEvent(ProductCreateEvent.builder()
+                .product(product)
+                .build());
 
         return savedDomain;
     }
