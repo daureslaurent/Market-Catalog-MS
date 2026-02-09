@@ -35,7 +35,7 @@ jobs:
       - name: Install Helm
         run: |
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-          helm plugin install https://github.com/chartmuseum/helm-push.git
+          helm plugin install https://github.com/chartmuseum/helm-push.git --version v0.10.3
 
       - name: Replace image repository and tag
         run: |
