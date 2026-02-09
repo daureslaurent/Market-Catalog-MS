@@ -16,6 +16,10 @@ This repository contains **catalog microservice** for the **Market** project.
 
 Manages products, categories, pricing, stock
 
+```
+<version>0.0.0</version>
+```
+
 ---
 
 ## 🧱 Architecture Overview
