@@ -7,7 +7,37 @@ spring:
       ddl-auto: none # liquidBase
     open-in-view: false
     show-sql: false
+    properties:
+      hibernate:
+        show_sql: false
 
+  # Disable auto liquidbase , use manually config instead
   liquibase:
+    enabled: false
+
+streambox:
+  scheduler:
     enabled: true
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+    # 1) Global defaults for all StreamBoxInput schedulers
+    defaults:
+      fixed-rate: PT7S
+      initial-delay: PT1S
+      limit: 5
+
+    # 2) Type-level overrides (keys are your logical types)
+#    types:
+#      inbox:
+#        fixed-rate: PT5S
+#        limit: 200
+#      outbox:
+#        fixed-rate: PT10S
+#        limit: 50
+#
+#     3) Instance-level overrides (keys are bean names)
+#    instances:
+#      productInboxAdapter:
+#        fixed-rate: PT2S
+#        limit: 500
+#      orderOutboxAdapter:
+#        fixed-rate: "3000"   # 3 seconds in millis

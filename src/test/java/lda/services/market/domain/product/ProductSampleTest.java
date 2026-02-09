@@ -2,12 +2,13 @@ package lda.services.market.domain.product;
 
 import lda.services.market.domain.product.model.Product;
 import lda.services.market.domain.product.model.Tag;
-import lda.services.market.infra.persistence.product.entity.ProductEntity;
-import lda.services.market.infra.persistence.product.entity.TagEntity;
+import lda.services.market.infra.persistence.read.product.entity.ProductReadEntity;
+import lda.services.market.infra.persistence.write.product.entity.ProductWriteEntity;
 
 import java.util.Set;
 import java.util.UUID;
 
+@SuppressWarnings("java:S2187")
 public class ProductSampleTest {
 
     private static final String PICTURE_ID = UUID.randomUUID().toString();
@@ -27,18 +28,31 @@ public class ProductSampleTest {
         );
     }
 
-    public static Set<TagEntity> tagEntity() {
-        return Set.of(
-                TagEntity.builder()
-                        .id(TAG_0_ID)
-                        .name("Tag0")
-                        .build(),
-                TagEntity.builder()
-                        .id(TAG_1_ID)
-                        .name("Tag1")
-                        .build()
-        );
-    }
+//    public static Set<TagReadEntity> tagEntityRead() {
+//        return Set.of(
+//                TagReadEntity.builder()
+//                        .id(TAG_0_ID)
+//                        .name("Tag0")
+//                        .build(),
+//                TagReadEntity.builder()
+//                        .id(TAG_1_ID)
+//                        .name("Tag1")
+//                        .build()
+//        );
+//    }
+//
+//    public static Set<TagReadEntity> tagEntityWrite() {
+//        return Set.of(
+//                TagReadEntity.builder()
+//                        .id(TAG_0_ID)
+//                        .name("Tag0")
+//                        .build(),
+//                TagReadEntity.builder()
+//                        .id(TAG_1_ID)
+//                        .name("Tag1")
+//                        .build()
+//        );
+//    }
 
     public static Product domain() {
         return Product.builder()
@@ -47,7 +61,7 @@ public class ProductSampleTest {
                 .detail("Detail of product")
                 .pictureId(PICTURE_ID)
                 .quantity(20)
-                .tags(tagDomain())
+//                .tags(tagDomain())
                 .build();
     }
 
@@ -58,19 +72,32 @@ public class ProductSampleTest {
                 .detail("Detail of product")
                 .pictureId(PICTURE_ID)
                 .quantity(20)
-                .tags(tagDomain())
+//                .tags(tagDomain())
                 .build();
     }
 
-    public static ProductEntity entity() {
+    public static ProductReadEntity entityRead() {
         final var domain = domain();
-        return ProductEntity.builder()
+        return ProductReadEntity.builder()
                 .id(domain.id())
                 .name(domain.name())
                 .detail(domain().detail())
                 .pictureId(domain().pictureId())
                 .quantity(domain.quantity())
-                .tags(tagEntity())
+//                .tags(tagEntityRead())
+                .build();
+
+    }
+
+    public static ProductWriteEntity entityWrite() {
+        final var domain = domain();
+        return ProductWriteEntity.builder()
+                .id(domain.id())
+                .name(domain.name())
+                .detail(domain().detail())
+                .pictureId(domain().pictureId())
+                .quantity(domain.quantity())
+//                .tags(tagEntityWrite())
                 .build();
 
     }
