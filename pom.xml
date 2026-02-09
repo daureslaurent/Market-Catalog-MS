@@ -10,7 +10,7 @@
     </parent>
     <groupId>lda.services</groupId>
     <artifactId>market-catalog-ms</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>market-catalog-ms</name>
     <description>market-catalog-ms</description>
     <url/>
