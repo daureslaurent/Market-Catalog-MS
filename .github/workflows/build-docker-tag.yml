@@ -48,7 +48,7 @@ jobs:
       - name: Build and publish a Docker image for ${{ github.repository }}
         uses: macbre/push-to-ghcr@master
         with:
-          image_tag: ${{ GITHUB_REF_NAME }}
+          image_tag: ${{ github.ref_name }}
           image_name: ${{ github.repository }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -102,6 +102,6 @@ jobs:
                 "branch": "'"${{ github.ref  }}"'",
                 "name": "'"${{ env.APP_NAME  }}"'",
                 "image": "'"${{ env.IMAGE_NAME  }}"'",
-                "tag": "'"${{ GITHUB_REF_NAME }}"'"
+                "tag": "'"${{ github.ref_name }}"'"
               }
             }'
