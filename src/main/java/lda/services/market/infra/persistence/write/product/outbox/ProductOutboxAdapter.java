@@ -1,71 +1,43 @@
 package lda.services.market.infra.persistence.write.product.outbox;
 
-import com.lda.streambox.entity.StreamBoxBaseStatusEnum;
+import com.lda.streambox.OutboxAdapter;
+import com.lda.streambox.factory.OutboxFactoryInterface;
 import com.lda.streambox.json.JsonConverter;
 import com.lda.streambox.model.StreamBoxEvent;
-import com.lda.streambox.port.StreamBoxInput;
-import lda.services.market.domain.product.model.Product;
-import lda.services.market.infra.persistence.projection.product.ProductChangeQuantityEvent;
-import lda.services.market.infra.persistence.projection.product.StreamEvent;
+import com.lda.streambox.model.StreamBoxWrapper;
+import com.lda.streambox.repository.StreamBoxRepository;
 import lda.services.market.infra.persistence.write.product.outbox.entity.ProductOutboxEventEntity;
-import lda.services.market.infra.persistence.write.product.outbox.mapper.ProductOutboxMapper;
-import lda.services.market.infra.persistence.projection.product.ProductCreateEvent;
-import lda.services.market.infra.persistence.write.product.outbox.repository.ProductOutboxRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-@RequiredArgsConstructor
 @Slf4j
 @Component
-public class ProductOutboxAdapter implements StreamBoxInput<ProductOutboxEventEntity> {
+public class ProductOutboxAdapter extends OutboxAdapter<ProductOutboxEventEntity, StreamBoxEvent> {
 
-    private final ProductOutboxRepository productOutboxRepository;
-    private final ProductOutboxMapper mapper;
-
-    private final JsonConverter jsonConverter;
     private final FakeKafkaContainer fakeKafkaContainer;
 
-    public void addEvent(StreamEvent event) {
-        final var streamEvent = StreamBoxEvent.builder()
-                .type(event.getClass().getSimpleName())
-                .payload(event)
-                .build();
-        this.addToBox(mapper.toEntity(streamEvent));
+    protected ProductOutboxAdapter(
+            JsonConverter jsonConverter,
+            StreamBoxRepository<ProductOutboxEventEntity> streamBoxRepository,
+            OutboxFactoryInterface<ProductOutboxEventEntity, StreamBoxWrapper<StreamBoxEvent>> factoryInterface,
+            FakeKafkaContainer fakeKafkaContainer) {
+        super(jsonConverter, streamBoxRepository, factoryInterface);
+        this.fakeKafkaContainer = fakeKafkaContainer;
     }
 
     @Override
-    public List<ProductOutboxEventEntity> lockNextBatch(int limit) {
-        return productOutboxRepository.lockNextBatch(limit);
-    }
-
-    @Override
-    public void finish(ProductOutboxEventEntity outboxEvent) {
-        outboxEvent.setStatus(StreamBoxBaseStatusEnum.FINISHED);
-        productOutboxRepository.save(outboxEvent);
-    }
-
-    @Override
-    public void addToBox(ProductOutboxEventEntity productOutboxEventEntity) {
-        productOutboxRepository.save(productOutboxEventEntity);
-    }
-
-    @Override
-    @Transactional(transactionManager = "writeTransactionManager")
-    public void handleStreamBox(ProductOutboxEventEntity productOutboxEventEntity) {
-        log.info("Produce event {}", productOutboxEventEntity.getId());
+    protected void sendToMessaging(String json) {
+        log.info("Produce event (sendToMessaging)");
         // Send event to kafka
 
         // Test Impl
-        final var jsonKafka = jsonConverter.toJson(productOutboxEventEntity);
-        log.info("Faking kafka ... {}", jsonKafka);
-        fakeKafkaContainer.addJson(jsonKafka);
-
-        this.finish(productOutboxEventEntity);
-        log.info("Finishing outbox event {}", productOutboxEventEntity.getId());
+        log.info("Faking kafka ... {}", json);
+        fakeKafkaContainer.addJson(json);
     }
 
+    @Transactional(transactionManager = "writeTransactionManager")
+    public void doHandle(ProductOutboxEventEntity entity) {
+        this.handleEvent(entity);
+    }
 }

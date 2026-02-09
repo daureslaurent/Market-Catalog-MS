@@ -39,7 +39,7 @@ public class ProductWritePersistenceAdapter implements ProductWriteOutput {
         final var savedDomain = mapper.toDomain(saved);
 
         outboxAdapter.addEvent(ProductCreateEvent.builder()
-                .product(product)
+                .product(savedDomain)
                 .build());
 
         return savedDomain;

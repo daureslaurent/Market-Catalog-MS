@@ -1,57 +1,43 @@
 package lda.services.market.infra.persistence.read.product.inbox;
 
-import com.lda.streambox.entity.StreamBoxBaseStatusEnum;
+import com.lda.streambox.InboxAdapter;
+import com.lda.streambox.json.JsonConverter;
 import com.lda.streambox.model.StreamBoxEvent;
-import com.lda.streambox.port.StreamBoxInput;
+import com.lda.streambox.repository.StreamBoxRepository;
+import lda.services.market.infra.persistence.projection.product.ProductChangeQuantityEvent;
 import lda.services.market.infra.persistence.projection.product.ProductCreateEvent;
 import lda.services.market.infra.persistence.read.product.ProductProjectionAdapter;
 import lda.services.market.infra.persistence.read.product.inbox.entity.ProductInboxEventEntity;
-import lda.services.market.infra.persistence.read.product.inbox.mapper.ProductInboxMapper;
-import lda.services.market.infra.persistence.read.product.inbox.repository.ProductInboxRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-@RequiredArgsConstructor
-@Component
 @Slf4j
-public class ProductInboxAdapter implements StreamBoxInput<ProductInboxEventEntity> {
-
-    private final ProductInboxRepository productInboxRepository;
-    private final ProductInboxMapper mapper;
+public class ProductInboxAdapter extends InboxAdapter<ProductInboxEventEntity, StreamBoxEvent> {
 
     private final ProductProjectionAdapter projectionAdapter;
 
-    public void createProductEvent(final ProductInboxEventEntity event) {
-        final StreamBoxEvent<ProductCreateEvent> e = mapper.toCreateEvent(event);
-        projectionAdapter.upsert(e.payload().product());
+    public ProductInboxAdapter(
+            JsonConverter jsonConverter,
+            StreamBoxRepository<ProductInboxEventEntity> streamBoxRepository,
+            InboxFactory streamBoxFactory,
+            ProductProjectionAdapter projectionAdapter) {
+        super(jsonConverter, streamBoxRepository, streamBoxFactory);
+        this.projectionAdapter = projectionAdapter;
     }
 
-    @Override
-    public List<ProductInboxEventEntity> lockNextBatch(int limit) {
-        return productInboxRepository.lockNextBatch(limit);
-    }
-
-    @Override
-    public void finish(ProductInboxEventEntity outboxEvent) {
-        outboxEvent.setStatus(StreamBoxBaseStatusEnum.FINISHED);
-        productInboxRepository.save(outboxEvent);
-    }
-
-    @Override
-    public void addToBox(ProductInboxEventEntity event) {
-        productInboxRepository.save(event);
-    }
-
-    @Override
     @Transactional(transactionManager = "readTransactionManager")
-    public void handleStreamBox(ProductInboxEventEntity event) {
-        log.info("Consuming event {}", event.getId());
-        this.createProductEvent(event);
-        this.finish(event);
+    public void doHandle(ProductInboxEventEntity entity) {
+        this.handleEvent(entity);
+    }
+
+    @Override
+    protected void handleProjection(StreamBoxEvent streamBoxEvent) {
+        log.info("Consuming event {}", streamBoxEvent);
+        switch (streamBoxEvent) {
+            case ProductCreateEvent e -> projectionAdapter.createProductProjection(e);
+            case ProductChangeQuantityEvent e -> projectionAdapter.changeQuantityProjection(e);
+            default -> log.error("Event type not handled: {}", streamBoxEvent);
+        }
     }
 
 }

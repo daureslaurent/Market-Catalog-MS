@@ -1,11 +1,10 @@
 package lda.services.market.e2e.product;
 
+import com.lda.streambox.scheduler.StreamBoxSchedulerRegistry;
 import lda.services.market.application.api.rest.product.model.ProductCreateRequest;
 import lda.services.market.application.api.rest.product.model.ProductDetalResponse;
 import lda.services.market.application.api.rest.product.model.ProductResponse;
-import lda.services.market.infra.persistence.read.product.inbox.ProductInboxScheduler;
 import lda.services.market.infra.persistence.read.product.inbox.consumer.ProductInboxConsumer;
-import lda.services.market.infra.persistence.write.product.outbox.ProductOutboxScheduler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,23 +18,26 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @ActiveProfiles("test")
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = "spring.task.scheduling.enabled=false")
+        properties = {
+                "spring.task.scheduling.enabled=false",
+                "streambox.scheduler.enabled=true"
+        })
 class ProductStreamBoxEndToEndApiTest {
 
     @LocalServerPort
     private int port;
 
     @Autowired
-    private ProductOutboxScheduler outboxScheduler;
-
-    @Autowired
-    private ProductInboxScheduler inboxScheduler;
+    private StreamBoxSchedulerRegistry registry;
 
     @Autowired
     private ProductInboxConsumer fakedMessaging;
 
     @Test
     void givenStreamBox_whenCreateProduct_ThenReadCopy() {
+        final var outbox = registry.get("productOutboxAdapter");
+        final var inbox = registry.get("productInboxAdapter");
+
         final var productPost = ProductCreateRequest.builder()
                 .name("My Product XY")
                 .detail("Detail of the product")
@@ -62,9 +64,9 @@ class ProductStreamBoxEndToEndApiTest {
         assertThat(productResponse.name()).isEqualTo(productPost.name());
         assertThat(productResponse.id()).isNotNull();
 
-        outboxScheduler.consumeOutbox();
+        outbox.consume(5);
         fakedMessaging.fakeMessaging();
-        inboxScheduler.consumeInbox();
+        inbox.consume(5);
 
         client.get().uri("/product/" + productResponse.id())
                 .accept(MediaType.APPLICATION_JSON)
